@@ -140,6 +140,15 @@ void update_loop400Hz(void) {
     
     // LED Drive
     led_drive();
+
+    // Read Button Value
+    armButtonState = Stick[BUTTON_ARM];
+    if(armButtonState != previousArmButtonState){
+        if(armButtonState == 0){
+            armButtonPressAndReleased = 1;
+        }
+        previousArmButtonState = armButtonState;
+    }
 }
 
 void init_mode(void) {
@@ -174,6 +183,17 @@ void flight_mode(void) {
     // Set LED Color
     onboard_led1(YELLOW, 1);
     onboard_led2(YELLOW, 1);
+    float throttle = limit(Stick[THROTTLE], 0.0f, 0.9f);
+
+    motor_set_duty_fl(throttle);
+    motor_set_duty_fr(throttle);
+    motor_set_duty_rl(throttle);
+    motor_set_duty_rr(throttle);
+
+    if(armButtonPressAndReleased == 1){
+        armButtonPressAndReleased = 0;
+        StampFly.flag.mode = PARKING_MODE;
+    }
 
 }
 
@@ -183,4 +203,18 @@ void parking_mode(void) {
     onboard_led1(GREEN, 1);
     onboard_led2(GREEN, 1);
 
+    motor_stop();
+
+    if(armButtonPressAndReleased == 1){
+        armButtonPressAndReleased = 0;
+        StampFly.flag.mode = FLIGHT_MODE;
+    }
+
+
+}
+
+float limit(float value, float min, float max) {
+    if (value < min) value = min;
+    if (value > max) value = max;
+    return value;
 }
