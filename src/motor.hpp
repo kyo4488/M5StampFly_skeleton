@@ -21,7 +21,7 @@
 #define CH_FRONT_LEFT (0)
 #define CH_FRONT_RIGHT (1)
 #define CH_REAR_LEFT (2)
-#define CH_REAR_RIGHT (2)
+#define CH_REAR_RIGHT (3)
 
 void motor_set_duty_fr(float duty);
 void motor_set_duty_fl(float duty);
