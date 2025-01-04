@@ -183,8 +183,34 @@ void flight_mode(void) {
     // Set LED Color
     onboard_led1(YELLOW, 1);
     onboard_led2(YELLOW, 1);
-    float throttle = limit(Stick[THROTTLE], 0.0f, 0.9f);
+    float throttle_delta = limit(deadband(Stick[THROTTLE], 0.03), 0.0f, 0.9f);
 
+    //Command
+    float roll_com = 40.0*PI/180* limit(deadband(Stick[AILERON], 0.03), -1.0, 1.0);
+    float pitch_com = 40.0*PI/180* limit(deadband(Stick[ELEVATOR], 0.03), -1.0, 1.0);
+    float yaw_com = 60.0*PI/180* limit(deadband(Stick[RUDDER], 0.03), -1.0, 1.0);
+
+    //Error
+    float roll_error = roll_com - StampFly.sensor.roll_rate;
+    float pitch_error = pitch_com - StampFly.sensor.pitch_rate;
+    float yaw_error = yaw_com - StampFly.sensor.yaw_rate;
+
+    //PID
+    float roll_delta = StampFly.pid.roll.update(roll_error, StampFly.times.interval_time);
+    float pitch_delta = StampFly.pid.pitch.update(pitch_error, StampFly.times.interval_time);
+    float yaw_delta = StampFly.pid.yaw.update(yaw_error, StampFly.times.interval_time);
+
+    //duty
+    float fr_duty = limit(throttle_delta - roll_delta + pitch_delta + yaw_delta, 0.0, 0.9);
+    float fl_duty = limit(throttle_delta + roll_delta + pitch_delta - yaw_delta, 0.0, 0.9);
+    float rr_duty = limit(throttle_delta - roll_delta - pitch_delta - yaw_delta, 0.0, 0.9);
+    float rl_duty = limit(throttle_delta + roll_delta - pitch_delta + yaw_delta, 0.0, 0.9);
+
+    motor_set_duty_fr(fr_duty);
+    motor_set_duty_fl(fl_duty);
+    motor_set_duty_rr(rr_duty);
+    motor_set_duty_rl(rl_duty);
+    
     motor_set_duty_fl(throttle);
     motor_set_duty_fr(throttle);
     motor_set_duty_rl(throttle);
