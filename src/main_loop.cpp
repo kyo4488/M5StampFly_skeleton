@@ -162,6 +162,12 @@ void update_loop400Hz(void) {
 void init_mode(void) {
     motor_stop();
     StampFly.counter.offset = 0;
+
+    //Set PID Gain
+    StampFly.pid.roll.set_parameter(0.1, 1.0e8, 0.0, 0.125, 0.00025);
+    StampFly.pid.pitch.set_parameter(0.1, 1.0e8, 0.0, 0.125, 0.00025);
+    StampFly.pid.yaw.set_parameter(0.1, 1.0e8, 0.0, 0.125, 0.00025);
+
     //Mode change
     StampFly.flag.mode = AVERAGE_MODE;
     return;
