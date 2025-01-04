@@ -213,6 +213,7 @@ void parking_mode(void) {
 
 }
 
+// Limit function
 float limit(float value, float min, float max) {
     if (value < min) value = min;
     if (value > max) value = max;
