@@ -218,3 +218,9 @@ float limit(float value, float min, float max) {
     if (value > max) value = max;
     return value;
 }
+
+//Dead band function
+float deadband(float value, float deadband) {
+    if (value < deadband && value > -deadband) value = 0.0;
+    return value;
+}
