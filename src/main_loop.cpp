@@ -193,8 +193,6 @@ void average_mode(void) {
 }
 
 void flight_mode(void) {
-    //飛行するためのコードを以下に記述する
-    // Set LED Color
     onboard_led1(YELLOW, 1);
     onboard_led2(YELLOW, 1);
     float throttle_delta = limit(deadband(Stick[THROTTLE], 0.03), 0.0f, 0.9f);
@@ -225,10 +223,6 @@ void flight_mode(void) {
     motor_set_duty_rr(rr_duty);
     motor_set_duty_rl(rl_duty);
     
-    motor_set_duty_fl(throttle);
-    motor_set_duty_fr(throttle);
-    motor_set_duty_rl(throttle);
-    motor_set_duty_rr(throttle);
 
     if(armButtonPressAndReleased == 1){
         armButtonPressAndReleased = 0;
