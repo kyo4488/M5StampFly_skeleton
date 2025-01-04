@@ -40,9 +40,14 @@
 #include "button.hpp"
 #include "buzzer.h"
 #include "stampfly.hpp"
+#include "tof.hpp"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
+
+volatile uint8_t armButtonState = 0;
+volatile uint8_t armButtonPressAndReleased = 0;
+volatile uint8_t previousArmButtonState = 0;
 
 void IRAM_ATTR onTimer(void);
 void init_copter(void);
@@ -52,6 +57,9 @@ void average_mode(void);
 void flight_mode(void);
 void parking_mode(void);
 void loop_400Hz(void);
+float limit(float value, float min, float max);
+float deadband(float value, float deadband);
+
 
 // Main loop
 void loop_400Hz(void) {
